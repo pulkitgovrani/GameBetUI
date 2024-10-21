@@ -1,77 +1,79 @@
-'use client'
-import { useCallback, useEffect, type MouseEventHandler } from 'react'
-import { createPortal } from 'react-dom'
-import { useFreezeBodyScroll } from 'hooks'
-import cx from 'classnames'
+"use client";
+import { useCallback, useEffect, type MouseEventHandler } from "react";
+import { createPortal } from "react-dom";
+import { useFreezeBodyScroll } from "hooks";
+import cx from "classnames";
 
-import { Overlay } from 'components/layout'
-import { Icon } from 'components/ui'
+import { Overlay } from "components/layout";
+import { Icon } from "components/ui";
 
-import s from './PlainModal.module.scss'
-
+import s from "./PlainModal.module.scss";
 
 export type PlainModalProps = {
-  className?: string
-  contentClassName?: string
-  containerClassName?: string
-  overlayClosable?: boolean
-  withCloseButton?: boolean
-  closeModal: (withOnClose?: boolean) => void
-}
+  className?: string;
+  contentClassName?: string;
+  containerClassName?: string;
+  overlayClosable?: boolean;
+  withCloseButton?: boolean;
+  closeModal: (withOnClose?: boolean) => void;
+};
 
-const PlainModal: React.CFC<PlainModalProps> = (props) => {
-  const {
-    children, className, contentClassName, containerClassName,
-    overlayClosable = true, withCloseButton = true,
-    closeModal,
-  } = props
+const PlainModal: React.CFC<PlainModalProps> = ({
+  children,
+  className,
+  contentClassName,
+  containerClassName,
+  overlayClosable = true,
+  withCloseButton = true,
+  closeModal,
+}) => {
+  useFreezeBodyScroll();
 
-  useFreezeBodyScroll()
-
-  const handleOverlayClick: MouseEventHandler<HTMLDivElement> = useCallback((event) => {
-    event.stopPropagation()
-
-    if (overlayClosable) {
-      closeModal(true)
-    }
-  }, [ overlayClosable, closeModal ])
+  const handleOverlayClick: MouseEventHandler<HTMLDivElement> = useCallback(
+    (event) => {
+      if (overlayClosable) {
+        closeModal(true);
+      }
+      event.stopPropagation();
+    },
+    [overlayClosable, closeModal]
+  );
 
   const handleCloseButtonClick = useCallback(() => {
-    closeModal(true)
-  }, [ closeModal ])
+    closeModal(true);
+  }, [closeModal]);
 
-  const handleModalClick: MouseEventHandler<HTMLDivElement> = useCallback((event) => {
-    event.stopPropagation()
-  }, [])
+  const handleModalClick: MouseEventHandler<HTMLDivElement> = useCallback(
+    (event) => {
+      event.stopPropagation();
+    },
+    []
+  );
 
   const rootClassName = cx(
     s.container,
     containerClassName,
-    'flex w-full',
-    'mb:absolute mb:left-0 mb:flex-col mb:justify-end mb:h-full',
-    'ds:items-center ds:justify-center ds:min-h-full m-auto'
-  )
+    "flex w-full mb:absolute mb:left-0 mb:flex-col mb:justify-end mb:h-full ds:items-center ds:justify-center ds:min-h-full m-auto"
+  );
 
   const modalClassName = cx(
     className,
-    'relative bg-grey-10 w-full font-medium flex flex-col',
-    'mb:max-h-full rounded-t-md',
-    'ds:max-w-[22.25rem] ds:rounded-md'
-  )
+    "relative bg-white shadow-lg border border-gray-200 w-full font-medium flex flex-col",
+    "mb:max-h-full rounded-lg ds:max-w-md ds:rounded-md"
+  );
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.code === 'Escape') {
-        closeModal(true)
+      if (event.code === "Escape") {
+        closeModal(true);
       }
-    }
+    };
 
-    window.addEventListener('keydown', handleKeyDown)
-
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [])
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [closeModal]);
 
   return createPortal(
     <Overlay onClick={handleOverlayClick}>
@@ -83,24 +85,25 @@ const PlainModal: React.CFC<PlainModalProps> = (props) => {
           className={modalClassName}
           onClick={handleModalClick}
         >
-          {
-            withCloseButton && (
-              <button
-                className="absolute top-4 right-4 p-2 z-40 bg-grey-15 border-grey-20 border rounded-full text-grey-70 hover:text-grey-90"
-                onClick={handleCloseButtonClick}
-              >
-                <Icon className="size-3" name="interface/close" />
-              </button>
-            )
-          }
-          <div className={cx(contentClassName, 'py-6 px-4 flex-1 overflow-y-auto overflow-x-hidden')}>
+          {withCloseButton && (
+            <button
+              className="absolute top-4 right-4 p-2 z-40 bg-gray-200 hover:bg-gray-300 rounded-full text-gray-600 hover:text-gray-800"
+              onClick={handleCloseButtonClick}
+              aria-label="Close modal"
+            >
+              <Icon className="size-4" name="interface/close" />
+            </button>
+          )}
+          <div
+            className={cx(contentClassName, "py-6 px-4 flex-1 overflow-y-auto")}
+          >
             {children}
           </div>
         </div>
       </div>
     </Overlay>,
-    document.getElementById('modals')!
-  )
-}
+    document.getElementById("modals")!
+  );
+};
 
-export default PlainModal
+export default PlainModal;

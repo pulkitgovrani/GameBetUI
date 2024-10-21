@@ -1,71 +1,61 @@
-import React, { useRef, useEffect, useState } from 'react'
-import cx from 'classnames'
-
-import { Icon } from 'components/ui'
-import type { IconName } from 'components/ui'
-
+import React, { useRef, useEffect, useState } from "react";
+import cx from "classnames";
+import { Icon } from "components/ui";
+import type { IconName } from "components/ui";
 
 type FallbackImageProps = {
-  className?: string
-  src?: string | null
-  fallback?: string
-  iconFallback?: string
-  alt?: string
-}
+  className?: string;
+  src?: string | null;
+  fallback?: string;
+  iconFallback?: string;
+  alt?: string;
+};
 
 const FallbackImage: React.FC<FallbackImageProps> = (props) => {
-  const { className, src, fallback, iconFallback, alt } = props
-  const [ isFallbackIcon, setFallbackIcon ] = useState(!src)
+  const { className, src, fallback, iconFallback, alt } = props;
+  const [isFallbackIcon, setFallbackIcon] = useState(!src);
 
-  const ref = useRef<HTMLImageElement>(null)
+  const ref = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const handleError = () => {
       if (iconFallback) {
-        setFallbackIcon(true)
+        setFallbackIcon(true);
+      } else if (ref.current && fallback) {
+        ref.current.src = fallback;
       }
-      else if (ref.current && fallback) {
-        ref.current.src = fallback
-      }
-    }
+    };
 
     if (!src) {
-      handleError()
-
-      return
+      handleError();
+      return;
     }
 
-    const img = new window.Image()
+    const img = new window.Image();
 
     img.onerror = () => {
-      // check if component still mounted
       if (ref.current) {
-        handleError()
+        handleError();
       }
-    }
+    };
 
-    img.src = src
-  }, [ src ])
+    img.src = src;
+  }, [src]);
 
   return (
-    <>
-      {
-        isFallbackIcon ? (
-          <Icon
-            className={cx(className, 'text-gray-60' )}
-            name={iconFallback as IconName}
-          />
-        ) : (
-          <img
-            ref={ref}
-            className={className}
-            src={src!}
-            alt={alt}
-          />
-        )
-      }
-    </>
-  )
-}
+    <div className={cx("flex justify-center items-center", className)}>
+      {isFallbackIcon ? (
+        <Icon className="text-gray-60" name={iconFallback as IconName} />
+      ) : (
+        <img
+          ref={ref}
+          className="rounded-lg shadow-md transition-transform duration-200 hover:scale-105"
+          src={src!}
+          alt={alt}
+        />
+      )}
+    </div>
+  );
+};
 
-export default FallbackImage
+export default FallbackImage;

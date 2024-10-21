@@ -1,23 +1,20 @@
-import React from 'react'
-
-import { Logo } from 'components/ui'
-
-import Navbar from './components/Navbar/Navbar'
-import Copy from './components/Copy/Copy'
-
+import React from "react";
+import { Logo } from "components/ui";
+import Navbar from "./components/Navbar/Navbar";
+import Copy from "./components/Copy/Copy";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="p-4 pb-3">
-      <div className="flex mb:flex-col ds:items-center justify-between pb-4 border-b border-b-grey-10">
-        <Logo className="h-4 mb:mb-4" />
+    <footer className="bg-white p-6 shadow-md">
+      <div className="flex flex-col items-center justify-between md:flex-row md:items-center mb-4 border-b border-gray-200 pb-4">
+        <Logo className="h-6 mb-4 md:mb-0" />
         <Navbar />
       </div>
-      <div className="mt-3">
+      <div className="mt-3 text-center">
         <Copy />
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

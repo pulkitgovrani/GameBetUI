@@ -1,54 +1,68 @@
-'use client'
+"use client";
 
-import React, { forwardRef, useCallback } from 'react'
+import React, { forwardRef, useCallback } from "react";
 
-import { Href } from 'components/navigation'
-
+import { Href } from "components/navigation";
 
 export type ButtonBaseProps = {
   // basic
-  children?: React.ReactNode
-  className?: string
-  onClick?: React.MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>
-  onMouseEnter?: React.MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>
+  children?: React.ReactNode;
+  className?: string;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
+  onMouseEnter?: React.MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>;
   // links
-  to?: string // router link
-  href?: string // external link
-  toTab?: string // external link in new tab
+  to?: string; // router link
+  href?: string; // external link
+  toTab?: string; // external link in new tab
   // misc
-  disabled?: boolean
-  loading?: boolean
-  tag?: string
-  type?: string
-  dataTestId?: string
-  rel?: string
-  target?: string
-  ariaLabel?: string
-}
+  disabled?: boolean;
+  loading?: boolean;
+  tag?: string;
+  type?: string;
+  dataTestId?: string;
+  rel?: string;
+  target?: string;
+  ariaLabel?: string;
+};
 
-const ButtonBase = forwardRef<HTMLAnchorElement | HTMLButtonElement, ButtonBaseProps>((props, ref) => {
+const ButtonBase = forwardRef<
+  HTMLAnchorElement | HTMLButtonElement,
+  ButtonBaseProps
+>((props, ref) => {
   const {
-    children, className,
-    disabled, loading,
-    to, toTab, href, onClick, onMouseEnter,
-    tag = 'button', type = 'button',
+    children,
+    className,
+    disabled,
+    loading,
+    to,
+    toTab,
+    href,
+    onClick,
+    onMouseEnter,
+    tag = "button",
+    type = "button",
     dataTestId,
-    rel, target, ariaLabel,
-  } = props
+    rel,
+    target,
+    ariaLabel,
+  } = props;
 
-  const handleClick = useCallback((event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
-    if (disabled || loading) {
-      event.preventDefault()
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
+      if (disabled || loading) {
+        event.preventDefault();
 
-      return
-    }
+        return;
+      }
 
-    if (typeof onClick === 'function') {
-      onClick(event)
-    }
-  }, [ loading, disabled, onClick ])
+      if (typeof onClick === "function") {
+        onClick(event);
+      }
+    },
+    [loading, disabled, onClick]
+  );
 
-  let node: string | React.ElementType = tag
+  let node: string | React.ElementType = tag;
 
   let nodeProps: any = {
     ref,
@@ -56,13 +70,13 @@ const ButtonBase = forwardRef<HTMLAnchorElement | HTMLButtonElement, ButtonBaseP
     disabled,
     onClick: handleClick,
     onMouseEnter,
-    'aria-busy': loading,
-    'aria-label': ariaLabel,
-    'data-testid': dataTestId,
-  }
+    "aria-busy": loading,
+    "aria-label": ariaLabel,
+    "data-testid": dataTestId,
+  };
 
   if (to || toTab || href) {
-    node = Href
+    node = Href;
 
     nodeProps = {
       ...nodeProps,
@@ -71,21 +85,14 @@ const ButtonBase = forwardRef<HTMLAnchorElement | HTMLButtonElement, ButtonBaseP
       toTab,
       rel,
       target,
-    }
-  }
-  else if (tag === 'button' || tag === 'input') {
-    nodeProps.type = type
-  }
-  else {
-    nodeProps.role = 'button'
+    };
+  } else if (tag === "button" || tag === "input") {
+    nodeProps.type = type;
+  } else {
+    nodeProps.role = "button";
   }
 
-  return React.createElement(
-    node,
-    nodeProps,
-    children
-  )
-})
+  return React.createElement(node, nodeProps, children);
+});
 
-
-export default ButtonBase
+export default ButtonBase;
